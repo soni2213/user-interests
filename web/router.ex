@@ -9,6 +9,10 @@ defmodule UserInterests.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :pass_users do
+    plug UserInterests.Plugs.Authenticate
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
     plug Guardian.Plug.VerifyHeader
@@ -29,6 +33,12 @@ defmodule UserInterests.Router do
     delete "/sessions", SessionController, :delete
 
     resources "/topics_of_interest", TopicOfInterestController # for topic of interests.
+
+    scope "/interests" do
+      pipe_through :pass_users
+      post "/", UserController, :add_interest
+      get "/", UserController, :show
+    end
   end
   # Other scopes may use custom stacks.
   # scope "/api", UserInterests do

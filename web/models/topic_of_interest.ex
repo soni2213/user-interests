@@ -15,6 +15,6 @@ defmodule UserInterests.TopicOfInterest do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :description])
-    |> validate_required([:name, :description])
+    |> validate_required([:name, :description, :user_id])
   end
 end
