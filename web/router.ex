@@ -11,8 +11,8 @@ defmodule UserInterests.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    resources "/users", UserController # for user actions.
-    resources "/topics_of_interest", TopicOfInterestController # for topic of interests.
+    plug Guardian.Plug.VerifyHeader
+    plug Guardian.Plug.LoadResource
   end
 
   scope "/", UserInterests do
@@ -24,7 +24,11 @@ defmodule UserInterests.Router do
 
   scope "/api", UserInterests do
     pipe_through :api
-    resources "/users", UserController
+    post "/users", UserController, :create
+    post "/sessions", SessionController, :create
+    delete "/sessions", SessionController, :delete
+
+    resources "/topics_of_interest", TopicOfInterestController # for topic of interests.
   end
   # Other scopes may use custom stacks.
   # scope "/api", UserInterests do
